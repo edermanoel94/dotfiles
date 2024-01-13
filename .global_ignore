@@ -1,0 +1,7 @@
+.idea
+tags
+node_modules
+vendor
+.vscode
+__debug_bin
+venv

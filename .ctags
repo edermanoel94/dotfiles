@@ -1,0 +1,56 @@
+--fields=n
+--tag-relative=yes
+--recurse=yes
+--sort=yes
+
+--exclude=.git
+--exclude=.svn
+--exclude=.vim-sessions
+--exclude=*.min.js
+--exclude=node_modules
+--exclude=vendor/bundle
+--exclude=bundle_cache
+--exclude=coverage
+--exclude=build
+--exclude=out
+
+--regex-ruby=/\s*(class|module)\s+[a-zA-Z0-9_:]+:([a-zA-Z0-9_]+)/\2/
+--regex-ruby=/\b([A-Z0-9_]+)\s*=($|[^=>])/\1/
+--regex-ruby=/const_set(\s+|\():([A-Z0-9_]+)/\2/
+
+--regex-ruby=/\battr_(accessor|reader|writer)\s+:([a-zA-Z0-9_?, ]+)/\2/
+--regex-ruby=/\bdef\s*[a-zA-Z0-9_]+\.([a-zA-Z0-9_]+[!?])/\1/
+
+--regex-ruby=/\balias\s+:?([a-zA-Z0-9_]+[!?]?)/\1/
+--regex-ruby=/\balias_method\s+:([a-zA-Z0-9_]+[!?]?)/\1/
+
+--regex-ruby=/\b(belongs_to|has_one|has_many|has_and_belongs_to_many)\s+:([a-zA-Z0-9_]+)/\2/
+--regex-ruby=/\bbelongs_to\s+:([a-zA-Z0-9_]+)/\1_id/
+--regex-ruby=/\bbelongs_to\s+:([a-zA-Z0-9_]+)/loaded_\1?/
+--regex-ruby=/\bhas_one\s+:([a-zA-Z0-9_]+)/build_\1/
+--regex-ruby=/\bhas_one\s+:([a-zA-Z0-9_]+)/loaded_\1?/
+--regex-ruby=/\b(has_many|has_and_belongs_to_many)\s+:([a-zA-Z0-9_]+)e?s/\1_ids/
+--regex-ruby=/\baccepts_nested_attributes_for\s+:([a-zA-Z0-9_]+)/\1_attributes=/
+
+--regex-ruby=/\bnamed_scope\s*:([a-zA-Z0-9_]+[!?]?)/\1/
+--regex-ruby=/\bscope\s*:([a-zA-Z0-9_]+[!?]?)/\1/
+
+--regex-ruby=/shared_(examples|context|examples_for)\s+["'](.*)["']\s+do/\2/
+--regex-ruby=/\bFabricator(\s+|\():([a-zA-Z0-9_]+)/\2/
+
+--regex-javascript=/(,|(;|^)[ \t]*(var|let|([A-Za-z_$][A-Za-z0-9_$.]+\.)*))[ \t]*([A-Za-z0-9_$]+)[ \t]*=[ \t]*(function\b|\([^)]*\)\s*=>)/\5/,function/
+--regex-javascript=/(,|^)[ \t]*([A-Za-z_$][A-Za-z0-9_$]+)[ \t]*:[ \t]*function\b\(/\2/,function/
+
+--langdef=kotlin
+--langmap=kotlin:.kt
+--langmap=kotlin:+.kts
+--regex-kotlin=/^[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*(private[^ ]*|protected)?[ \t]*class[ \t]+([a-zA-Z0-9_]+)/\4/c,classes/
+--regex-kotlin=/^[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*(private[^ ]*|protected)?[ \t]*object[ \t]+([a-zA-Z0-9_]+)/\4/o,objects/
+--regex-kotlin=/^[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*(private[^ ]*|protected)?[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*data class[ \t]+([a-zA-Z0-9_]+)/\6/c,data classes/
+--regex-kotlin=/^[ \t]*((abstract|final|sealed|implicit|lazy)[ \t]*)*(private[^ ]*|protected)?[ \t]*interface[ \t]+([a-zA-Z0-9_]+)/\4/i,interfaces/
+--regex-kotlin=/^[ \t]*type[ \t]+([a-zA-Z0-9_]+)/\1/T,types/
+--regex-kotlin=/^[ \t]*((abstract|final|sealed|implicit|lazy|private[^ ]*(\[[a-z]*\])*|protected)[ \t]*)*fun[ \t]+([a-zA-Z0-9_]+)/\4/m,methods/
+--regex-kotlin=/^[ \t]*((abstract|final|sealed|implicit|lazy|private[^ ]*|protected)[ \t]*)*val[ \t]+([a-zA-Z0-9_]+)/\3/co,constants/
+--regex-kotlin=/^[ \t]*((abstract|final|sealed|implicit|lazy|private[^ ]*|protected)[ \t]*)*var[ \t]+([a-zA-Z0-9_]+)/\3/va,variables/
+--regex-kotlin=/^[ \t]*package[ \t]+([a-zA-Z0-9_.]+)/\1/p,packages/
+--regex-kotlin=/^[ \t]*import[ \t]+([a-zA-Z0-9_.]+)/\1/p,imports/
