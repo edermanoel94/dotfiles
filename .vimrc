@@ -13,10 +13,10 @@ set noswapfile cursorline
 set autoindent copyindent smartindent
 set nu relativenumber
 set hlsearch incsearch ignorecase smartcase
-set encoding=utf-8
 set colorcolumn=120
 set textwidth=120
 set foldmethod=manual
+set re=0
 
 set clipboard=unnamed
 set completeopt-=preview
@@ -33,17 +33,17 @@ map Q <Nop>
 
 " replace all with case sensitive
 " nnoremap <leader>s :%s/<C-r><C-w>//gI<Left><Left><Left>
-nnoremap <leader>q :bp<BAR>bd #<CR>
-nnoremap <silent><leader>q :lclose<bar>b#<bar>bd #<CR>
 nnoremap <silent><leader>Q :q<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>a :cclose<CR>
+nnoremap <leader>gb :!git blame % -L 10<CR>
 
 nnoremap <leader>lg :!lazygit<CR>
 
 nnoremap <silent><C-l> :nohl<CR>:syntax sync fromstart<CR>
 
-vnoremap <leader>f zf
+nnoremap <silent><leader>bc :bufdo if bufname('%') =~ 'go test*' <BAR> bd <BAR> endif<CR>
+nnoremap <silent><leader>bd :bufdo if bufname('%') =~ 'dlv test*' <BAR> bd <BAR> endif<CR>
 
 " Save searches
 set viminfo+=/10000
@@ -54,8 +54,8 @@ noremap X "_x
 nnoremap / /\v
 vnoremap / /\v
 
-set laststatus=2
-set statusline=[%n]\ %<%f%h%m
+"set laststatus=2
+"set statusline=[%n]\ %<%f%h%m
 
 " keep more context when scrolling off the end of a buffer
 set scrolloff=1
@@ -66,11 +66,21 @@ call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'MattesGroeger/vim-bookmarks'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
+Plug 'AndrewRadev/splitjoin.vim'
 Plug 'doums/darcula'
+Plug 'hashivim/vim-terraform'
+Plug 'weirongxu/plantuml-previewer.vim'
+Plug 'tyru/open-browser.vim'
+Plug 'aklt/plantuml-syntax'
 Plug 'airblade/vim-gitgutter'
 Plug 'morhetz/gruvbox'
 Plug 'vim-test/vim-test'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdtree'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -96,6 +106,13 @@ colorscheme darcula
 set termguicolors
 set bg=dark
 
+"---------------------------------------------------------------- Markdown Preview {{{1
+
+nmap <leader>md <Plug>MarkdownPreviewToggle
+
+"---------------------------------------------------------------- Vim Test {{{1
+
+nmap <silent> <leader>pl :PlantumlOpen<CR>
 
 "---------------------------------------------------------------- Vim Test {{{1
 let test#strategy = "vimterminal"
@@ -111,7 +128,6 @@ function! DebugNearest()
   unlet g:test#go#runner
 endfunction
 
-" Testing a new feature
 nmap <silent> t<C-d> :call DebugNearest()<CR>
 
 "---------------------------------------------------------------- GO {{{1
@@ -153,7 +169,6 @@ autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit'
 autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
 autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
 
-
 autocmd FileType go nmap gr <Plug>(go-referrers)
 autocmd FileType go nmap gi <Plug>(go-implements)
 autocmd FileType go nmap gI <Plug>(go-if-err)
@@ -165,20 +180,6 @@ autocmd FileType go nmap <leader>fs <Plug>(go-fill-struct)
 autocmd FileType go nmap <leader>ta <Plug>(go-add-tags)
 autocmd FileType go nmap <leader>rn <Plug>(go-rename)
 
-function! s:viclip_copy(content) abort
-      let encoded = system('base64', a:content)
-      let req_body = json_encode(printf('{"content": "%s"}', encoded))
-      silent! call system('curl --connect-timeout 1 -X POST -H "Content-Type: application/json" -d ' . req_body . ' http://192.168.0.5:8080/clip')
-endfunction
-
-function! s:viclip_is_up() abort
-    let status_code = system('curl --connect-timeout 1 -s -o /dev/null -w "%{http_code}" http://192.168.0.5:8080/health')
-    if status_code != 200
-      return 0
-    endif
-    return 1
-endfunction
-
 function! s:create_breakpoint() abort
   let l:line = "b" . " " . expand('%') . ":" . line(".")
   if len(l:line) > 0
@@ -186,21 +187,26 @@ function! s:create_breakpoint() abort
       echoerr "cannot get statement from this line"
       return
     endif
-    let is_up = s:viclip_is_up()
-    if is_up == 1
-      call s:viclip_copy(l:line)
-    else
-      echom "viclip is current offline"
-      call setreg("*", l:line)
-      call setreg("+", l:line)
-    endif
+    call setreg("+", l:line)
     echom l:line
   else
     echoerr "cannot find filename"
   endif
 endfunction
 
+function! s:open_github_repo_code() abort
+  let l:cur_proj = trim(fnamemodify(system('pwd'), ':t'))
+  let l:file = expand('%') . "#L" . line(".")
+  let l:branch_tag = trim(system('git rev-parse --abbrev-ref HEAD'))
+  echom l:branch_tag
+  let l:link_gh = "https://github.com/pismo/" . l:cur_proj . "/tree/". l:branch_tag . "/" . l:file
+  let l:cmd = "open " . l:link_gh
+  call setreg("+", l:link_gh)
+  call system(l:cmd)
+endfunction
+
 autocmd FileType go nmap <leader>b :<C-u>call <SID>create_breakpoint()<CR>
+autocmd FileType go nmap <leader>f :<C-u>call <SID>open_github_repo_code()<CR>
 
 " FZF
 
@@ -213,6 +219,14 @@ command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-hea
 
 nnoremap <C-f> :Rg 
 
+"---------------------------------------------------------------- BOOKMARK {{{1
+
+let g:bookmark_no_default_key_mappings = 1
+
+nmap <Leader>mm <Plug>BookmarkToggle
+nmap <Leader>mt <Plug>BookmarkAnnotate
+nmap <Leader>ma <Plug>BookmarkShowAll
+
 "---------------------------------------------------------------- JQ {{{1
 
 if executable('jq')
@@ -222,6 +236,7 @@ endif
 
 "---------------------------------------------------------------- WHITESPACE {{{1
 if exists('loaded_trailing_whitespace_plugin') | finish | endif
+
 let loaded_trailing_whitespace_plugin = 1
 
 if !exists('g:extra_whitespace_ignored_filetypes')
@@ -248,4 +263,3 @@ function! s:FixWhitespace(line1,line2)
 endfunction
 
 command! -range=% FixWhitespace call <SID>FixWhitespace(<line1>,<line2>)
-
