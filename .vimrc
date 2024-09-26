@@ -62,6 +62,8 @@ set scrolloff=1
 
 set mouse=a mousehide
 
+com! -bar  BdReadOnly  exe 'bd '.join(filter(range(1, bufnr('$')), {i,v -> getbufvar(v, '&l:ro') == 1}))
+
 call plug#begin()
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -69,13 +71,13 @@ Plug 'junegunn/fzf.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'MattesGroeger/vim-bookmarks'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
+" Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'doums/darcula'
 Plug 'hashivim/vim-terraform'
-Plug 'weirongxu/plantuml-previewer.vim'
-Plug 'tyru/open-browser.vim'
-Plug 'aklt/plantuml-syntax'
+" Plug 'weirongxu/plantuml-previewer.vim'
+" Plug 'tyru/open-browser.vim'
+" Plug 'aklt/plantuml-syntax'
 Plug 'airblade/vim-gitgutter'
 Plug 'morhetz/gruvbox'
 Plug 'vim-test/vim-test'
@@ -83,6 +85,8 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdtree'
 Plug 'kien/rainbow_parentheses.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'pablopunk/persistent-undo.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
@@ -101,10 +105,10 @@ au Syntax * RainbowParenthesesLoadBraces
 
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
-" colorscheme gruvbox
+"colorscheme gruvbox
 colorscheme darcula
 set termguicolors
-set bg=dark
+"set bg=dark
 
 "---------------------------------------------------------------- Markdown Preview {{{1
 
@@ -128,7 +132,26 @@ function! DebugNearest()
   unlet g:test#go#runner
 endfunction
 
-nmap <silent> t<C-d> :call DebugNearest()<CR>
+function! DebugFile()
+  let g:test#go#runner = 'delve'
+  TestFile
+  unlet g:test#go#runner
+endfunction
+
+nmap <silent> d<C-n> :call DebugNearest()<CR>
+nmap <silent> d<C-f> :call DebugFile()<CR>
+
+"---------------------------------------------------------------- GOYO {{{1
+autocmd BufNewFile,BufRead *.slide call SetVimPresentationMode()
+
+function SetVimPresentationMode()
+  nnoremap <buffer> <Right> :n<CR>
+  nnoremap <buffer> <Left> :N<CR>
+
+  if !exists('#goyo')
+    Goyo
+  endif
+endfunction
 
 "---------------------------------------------------------------- GO {{{1
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
@@ -140,6 +163,7 @@ let g:go_decls_includes = 'func,type'
 let g:go_decls_mode = 'fzf'
 
 let g:go_test_timeout = "30s"
+let g:go_test_show_name = 1
 let g:go_list_type = "quickfix"
 let g:go_fmt_command = "gopls"
 
@@ -180,6 +204,11 @@ autocmd FileType go nmap <leader>fs <Plug>(go-fill-struct)
 autocmd FileType go nmap <leader>ta <Plug>(go-add-tags)
 autocmd FileType go nmap <leader>rn <Plug>(go-rename)
 
+let g:go_debug_windows = {
+      \ 'vars':       'leftabove 50vnew',
+      \ 'stack':      'leftabove 50new',
+      \ }
+
 function! s:create_breakpoint() abort
   let l:line = "b" . " " . expand('%') . ":" . line(".")
   if len(l:line) > 0
@@ -206,7 +235,8 @@ function! s:open_github_repo_code() abort
 endfunction
 
 autocmd FileType go nmap <leader>b :<C-u>call <SID>create_breakpoint()<CR>
-autocmd FileType go nmap <leader>f :<C-u>call <SID>open_github_repo_code()<CR>
+
+nmap <leader>f :<C-u>call <SID>open_github_repo_code()<CR>
 
 " FZF
 

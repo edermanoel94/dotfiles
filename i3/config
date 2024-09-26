@@ -9,12 +9,15 @@
 
 set $mod Mod4
 
+exec --no-startup-id xrandr --output HDMI-0 --off --output DP-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off --output DP-2 --off --output DP-3 --mode 1920x1080 --pos 1920x0 --rotate normal --output DP-4 --off --output DP-5 --off
+
 exec --no-startup-id /usr/bin/policykit-1-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id xrdb -merge /home/eder/.Xresources
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 # font pango:Fira Code 9
-font pango:DejaVu Sans Mono 8
+font pango:DejaVuSansM Nerd Font 9
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -25,7 +28,7 @@ font pango:DejaVu Sans Mono 8
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-# exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --image /home/edercale/Pictures/backgrounds/wallhaven-y8o51x_1920x1080.png --tiling --nofork
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --image /home/eder/Pictures/background.jpg --tiling --nofork
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
@@ -49,7 +52,8 @@ floating_modifier $mod
 
 # start a terminal
 # bindsym $mod+Return exec xterm -bg black -fg white -font 9x15
-bindsym $mod+Return exec st
+# bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec --no-startup-id uxterm
 # bindsym $mod+o exec kitty
 
 # kill focused window
@@ -168,7 +172,7 @@ mode "$mode_redshift" {
     bindsym Escape mode "default"
 }
 
-bindsym $mod+Shift+x exec i3lock
+bindsym $mod+Shift+x exec i3lock --image /home/eder/Pictures/background.jpg --tiling --nofork
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -210,12 +214,12 @@ bar {
         status_command i3status
 }
 
-exec_always feh --bg-fill /home/edercale/Pictures/background.png
+exec_always feh --bg-fill /home/eder/Pictures/background.jpg
 
 focus_follows_mouse no
 
 hide_edge_borders both
 
-bindsym Print             exec flameshot full -p /home/edercale/Pictures
-bindsym Shift+Print       exec flameshot gui --clipboard -p /home/edercale/Pictures
+bindsym Print             exec flameshot full -p /home/eder/Pictures
+bindsym Shift+Print       exec flameshot gui --clipboard -p /home/eder/Pictures
 
