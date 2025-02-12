@@ -42,9 +42,6 @@ nnoremap <leader>lg :!lazygit<CR>
 
 nnoremap <silent><C-l> :nohl<CR>:syntax sync fromstart<CR>
 
-nnoremap <silent><leader>bc :bufdo if bufname('%') =~ 'go test*' <BAR> bd <BAR> endif<CR>
-nnoremap <silent><leader>bd :bufdo if bufname('%') =~ 'dlv test*' <BAR> bd <BAR> endif<CR>
-
 " Save searches
 set viminfo+=/10000
 
@@ -54,39 +51,26 @@ noremap X "_x
 nnoremap / /\v
 vnoremap / /\v
 
-"set laststatus=2
-"set statusline=[%n]\ %<%f%h%m
-
 " keep more context when scrolling off the end of a buffer
 set scrolloff=1
 
 set mouse=a mousehide
 
-com! -bar  BdReadOnly  exe 'bd '.join(filter(range(1, bufnr('$')), {i,v -> getbufvar(v, '&l:ro') == 1}))
-
 call plug#begin()
 
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf', {'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'MattesGroeger/vim-bookmarks'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'doums/darcula'
-Plug 'hashivim/vim-terraform'
-" Plug 'weirongxu/plantuml-previewer.vim'
-Plug 'tyru/open-browser.vim'
-" Plug 'aklt/plantuml-syntax'
-Plug 'airblade/vim-gitgutter'
-Plug 'morhetz/gruvbox'
-Plug 'vim-test/vim-test'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdtree'
 Plug 'kien/rainbow_parentheses.vim'
-Plug 'junegunn/goyo.vim'
 Plug 'pablopunk/persistent-undo.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'vim-test/vim-test'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
@@ -110,14 +94,6 @@ colorscheme darcula
 set termguicolors
 "set bg=dark
 
-"---------------------------------------------------------------- Markdown Preview {{{1
-
-nmap <leader>md <Plug>MarkdownPreviewToggle
-
-"---------------------------------------------------------------- Vim Test {{{1
-
-nmap <silent> <leader>pl :PlantumlOpen<CR>
-
 "---------------------------------------------------------------- Vim Test {{{1
 let test#strategy = "vimterminal"
 
@@ -140,18 +116,6 @@ endfunction
 
 nmap <silent> d<C-n> :call DebugNearest()<CR>
 nmap <silent> d<C-f> :call DebugFile()<CR>
-
-"---------------------------------------------------------------- GOYO {{{1
-autocmd BufNewFile,BufRead *.slide call SetVimPresentationMode()
-
-function SetVimPresentationMode()
-  nnoremap <buffer> <Right> :n<CR>
-  nnoremap <buffer> <Left> :N<CR>
-
-  if !exists('#goyo')
-    Goyo
-  endif
-endfunction
 
 "---------------------------------------------------------------- GO {{{1
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
@@ -236,26 +200,9 @@ endfunction
 
 autocmd FileType go nmap <leader>b :<C-u>call <SID>create_breakpoint()<CR>
 
-nmap <leader>f :<C-u>call <SID>open_github_repo_code()<CR>
-
-" FZF
-
+"---------------------------------------------------------------- FZF {{{1
 nnoremap <C-p> :Files!<CR>
 nnoremap <C-b> :Buffers<CR>
-
-" RG
-
-command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".(<q-args>), 1, {'options': '--delimiter : --nth 4..'}, <bang>0)
-
-nnoremap <C-f> :Rg 
-
-"---------------------------------------------------------------- BOOKMARK {{{1
-
-let g:bookmark_no_default_key_mappings = 1
-
-nmap <Leader>mm <Plug>BookmarkToggle
-nmap <Leader>mt <Plug>BookmarkAnnotate
-nmap <Leader>ma <Plug>BookmarkShowAll
 
 "---------------------------------------------------------------- JQ {{{1
 
