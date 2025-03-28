@@ -5,6 +5,8 @@ filetype plugin indent on
 
 syntax on
 
+set encoding=UTF-8
+
 set autoread
 set hidden
 set noerrorbells
@@ -74,6 +76,10 @@ Plug 'vim-test/vim-test'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
+
+
+autocmd BufWritePost *.c,*.h silent! exec "!ctags -R ."
+
 
 "---------------------------------------------------------------- NERDTree {{{1
 

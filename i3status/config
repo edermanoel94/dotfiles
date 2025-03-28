@@ -17,6 +17,7 @@ general {
 
 order += "disk /"
 order += "wireless _first_"
+order += "battery 0"
 order += "cpu_usage"
 order += "memory"
 order += "tztime local"
@@ -44,4 +45,15 @@ memory {
 
 disk "/" {
           format = "Disk usage: %percentage_used"
+}
+
+battery 0 {
+	format = "%status %percentage - %remaining"
+	format_down = "No battery"
+	status_chr = "CHR"
+	status_bat = "BAT"
+	status_unk = "UNK"
+	status_full = "FULL"
+	path = "/sys/class/power_supply/BAT%d/uevent"
+	low_threshold = 25
 }

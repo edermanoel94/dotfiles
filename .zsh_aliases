@@ -1,9 +1,9 @@
 alias lg=lazygit
 alias c=clear
 alias e=exit
-alias m=make
-# alias fzf-preview='fzf --preview "batcat --color always --style=numbers --line-range=:500 {}"'
-alias fd=fdfind
-alias bat=batcat
+alias todo='vim ~/Documents/TODO'
+alias todo-view='cat ~/Documents/TODO'
 
 alias ports='sudo lsof -i -P -n | grep LISTEN'
+
+alias artisan="go run . artisan"
