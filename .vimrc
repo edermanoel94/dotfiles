@@ -148,7 +148,7 @@ let g:go_highlight_operators = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_build_constraints = 1
 
-let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
+let g:go_metalinter_enabled = ['govet', 'revive', 'golint', 'errcheck']
 let g:go_metalinter_autosave = 1
 let g:go_metalinter_autosave_enabled = ['golint']
 
@@ -205,6 +205,7 @@ function! s:open_github_repo_code() abort
 endfunction
 
 autocmd FileType go nmap <leader>b :<C-u>call <SID>create_breakpoint()<CR>
+nmap <leader>f :<C-u>call <SID>open_github_repo_code()<CR>
 
 "---------------------------------------------------------------- FZF {{{1
 nnoremap <C-p> :Files!<CR>
