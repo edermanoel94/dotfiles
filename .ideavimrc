@@ -12,6 +12,14 @@ nnoremap \r :action IdeaVim.ReloadVimRc.reload<CR>
 let mapleader=" "
 
 set nu rnu
+set visualbell
+set noerrorbells
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+set history=1000
 
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
 
@@ -19,6 +27,7 @@ set nu rnu
 Plug 'machakann/vim-highlightedyank'
 " Commentary plugin
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
 
 nnoremap <c-\> :action SplitVertically<CR>
 nnoremap <c--> :action SplitHorizontally<CR>
@@ -40,6 +49,9 @@ nnoremap <c-f> :action GotoFile<CR>
 
 nnoremap <c-o> :action Back<CR>
 nnoremap <c-i> :action Forward<CR>
+
+nmap <leader>rn :action RenameElement<CR>
+nmap <silent><leader>Q :action CloseEditor<CR>
 
 "" Map \b to toggle the breakpoint on the current line
 map <leader>b <Action>(ToggleLineBreakpoint)
