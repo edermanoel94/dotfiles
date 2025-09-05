@@ -1,5 +1,7 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
+vim.opt.encoding="utf-8"
 vim.opt.relativenumber = true
 vim.opt.mouse = "a"
 vim.opt.swapfile = false
@@ -10,6 +12,17 @@ vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
+vim.opt.compatible=false
+vim.opt.hlsearch=true
+vim.opt.laststatus = 2
+vim.opt.vb = true
+vim.opt.ruler = true
+vim.opt.spelllang="en_us"
+vim.opt.autoindent=true
+vim.opt.colorcolumn="120"
+vim.opt.textwidth=120
+vim.opt.scrollbind=false
+vim.opt.wildmenu=true
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -19,6 +32,13 @@ vim.schedule(function()
 	vim.o.clipboard = "unnamedplus"
 end)
 
+
+vim.opt.showcmd=true -- "show incomplete cmds down the bottom
+vim.opt.showmode=true -- "show current mode down the bottom
+vim.opt.incsearch=true -- "find the next match as we type the search
+vim.opt.wrap=false -- "dont wrap lines
+vim.opt.backup=false
+vim.opt.swapfile=false
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -31,6 +51,8 @@ vim.opt.splitbelow = true
 vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
+
+vim.keymap.set('n', '<leader>a', '<cmd>cclose<CR>', { silent = true })
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -97,6 +119,14 @@ require("lazy").setup({
 					changedelete = { text = "~" },
 				},
 			},
+      config = function()
+        local gitsigns = require('gitsigns')
+
+        vim.keymap.set('n', "<leader>gl", gitsigns.blame_line)
+        vim.keymap.set('n', "<leader>gb", function()
+          gitsigns.blame()
+        end)
+      end
 		},
 		{
 			"nvim-telescope/telescope.nvim",
@@ -128,7 +158,6 @@ require("lazy").setup({
 				-- See `:help telescope.builtin`
 				local builtin = require("telescope.builtin")
 				vim.keymap.set("n", "<C-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
-				vim.keymap.set("n", "<C-g>", builtin.grep_string, { desc = "[S]earch current [W]ord" })
 				vim.keymap.set("n", "<C-f>", builtin.live_grep, { desc = "[S]earch by [G]rep" })
 				vim.keymap.set("n", "<C-b>", builtin.buffers, { desc = "[ ] Find existing buffers" })
 
@@ -167,7 +196,7 @@ require("lazy").setup({
 
 						map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
 						map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
-						map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+						map("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
 						map("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 						map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 						map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -358,13 +387,22 @@ require("lazy").setup({
 					end
 				end, { desc = "Peek Fold" })
 
-				require('ufo').setup({
-					provider_selector = function(bufnr, filetype, buftype)
-						return {'lsp', 'indent' }
-					end
-				})
-			end
-		},
+        local ftMap = {
+          vim = 'indent',
+          go = {'indent'},
+          git = ''
+        }
+        require('ufo').setup({
+          provider_selector = function(bufnr, filetype)
+            -- return a string type use internal providers
+            -- return a string in a table like a string type
+            -- return empty string '' will disable any providers
+            -- return `nil` will use default value {'lsp', 'indent'}
+            return ftMap[filetype] or {'treesitter', 'indent'}
+          end
+        })
+      end
+    },
     {
       'edermanoel94/vim-test',
       keys = {
@@ -408,7 +446,6 @@ require("gruvbox").setup({})
 
 vim.cmd("colorscheme gruvbox")
 
--- Custom helpers (Lua versions)
 local function create_breakpoint()
 	local file = vim.fn.expand("%")
 	local line = vim.fn.line(".")
