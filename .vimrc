@@ -85,12 +85,36 @@ Plug 'zhimsel/vim-stay'
 Plug 'junegunn/goyo.vim'
 Plug 'pablopunk/persistent-undo.vim'
 Plug 'luochen1990/rainbow'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
 
-"---------------------------------------------------------------- NERDTree {{{1
+"---------------------------------------------------------------- Ultisnips {{{1
 
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+command! GoSnippets call s:GoSnippets()
+
+function! s:GoSnippets() abort
+  let filename = '/home/eder/.vim/plugged/vim-snippets/snippets/go.snippets'
+  if !filereadable(filename)
+    echoerr 'File not found: ' . filename
+    return
+  endif
+
+  " Read lines from the file into fzf
+  call fzf#run(fzf#wrap({
+        \ 'source': 'cat ' . shellescape(filename) . ' | ' . 'grep -i snippet',
+        \ 'options': '--prompt "Select a snippet> "'
+        \ }))
+endfunction
+
+"---------------------------------------------------------------- NERDTree {{{1
 nnoremap <leader>e :NERDTreeToggle<CR>
 nnoremap <leader>E :NERDTreeFind<CR>
 
