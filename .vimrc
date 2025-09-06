@@ -87,7 +87,6 @@ Plug 'pablopunk/persistent-undo.vim'
 Plug 'luochen1990/rainbow'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
@@ -95,8 +94,8 @@ call plug#end()
 "---------------------------------------------------------------- Ultisnips {{{1
 
 let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
 
 command! GoSnippets call s:GoSnippets()
 
@@ -107,12 +106,13 @@ function! s:GoSnippets() abort
     return
   endif
 
-  " Read lines from the file into fzf
   call fzf#run(fzf#wrap({
         \ 'source': 'cat ' . shellescape(filename) . ' | ' . 'grep -i snippet',
         \ 'options': '--prompt "Select a snippet> "'
         \ }))
 endfunction
+
+nmap <silent> <leader>gs :GoSnippets<CR>
 
 "---------------------------------------------------------------- NERDTree {{{1
 nnoremap <leader>e :NERDTreeToggle<CR>
