@@ -84,6 +84,7 @@ Plug 'preservim/nerdtree'
 Plug 'zhimsel/vim-stay'
 Plug 'junegunn/goyo.vim'
 Plug 'pablopunk/persistent-undo.vim'
+Plug 'luochen1990/rainbow'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
@@ -94,6 +95,8 @@ nnoremap <leader>e :NERDTreeToggle<CR>
 nnoremap <leader>E :NERDTreeFind<CR>
 
 "---------------------------------------------------------------- Theme {{{1
+
+let g:rainbow_active = 1
 
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
