@@ -38,8 +38,8 @@ map Q <Nop>
 " nnoremap <leader>s :%s/<C-r><C-w>//gI<Left><Left><Left>
 nnoremap <silent><leader>Q :q<CR>
 nnoremap <leader>w :w<CR>
+nnoremap <leader>c :copen<CR>
 nnoremap <leader>a :cclose<CR>
-nnoremap <leader>gb :!git blame % -L 10<CR>
 
 nnoremap <leader>lg :!lazygit<CR>
 
@@ -77,7 +77,7 @@ Plug 'aklt/plantuml-syntax'
 Plug 'tyru/open-browser.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'morhetz/gruvbox'
-Plug 'vim-test/vim-test'
+Plug 'edermanoel94/vim-test'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdtree'
@@ -148,6 +148,10 @@ function SetVimPresentationMode()
   endif
 endfunction
 
+"---------------------------------------------------------------- Fugitive {{{1
+
+nnoremap <leader>gl :Git blame<CR>
+
 "---------------------------------------------------------------- GO {{{1
 autocmd BufNewFile,BufRead *.go setlocal foldmethod=syntax foldlevel=99 noexpandtab tabstop=4 shiftwidth=4
 
@@ -196,7 +200,7 @@ autocmd FileType go nmap gI <Plug>(go-if-err)
 autocmd FileType go nmap gs <Plug>(go-decls)
 autocmd FileType go nmap gS <Plug>(go-decls-dir)
 
-autocmd FileType go nmap <leader>c <Plug>(go-coverage-toggle)
+autocmd FileType go nmap <leader>ct <Plug>(go-coverage-toggle)
 autocmd FileType go nmap <leader>fs <Plug>(go-fill-struct)
 autocmd FileType go nmap <leader>ta <Plug>(go-add-tags)
 autocmd FileType go nmap <leader>rn <Plug>(go-rename)
