@@ -151,7 +151,6 @@ endfunction
 "---------------------------------------------------------------- GO {{{1
 autocmd BufNewFile,BufRead *.go setlocal foldmethod=syntax foldlevel=99 noexpandtab tabstop=4 shiftwidth=4
 
-au filetype go inoremap <buffer> . .<C-x><C-o>
 au BufRead,BufNewFile *.gohtml set filetype=gohtmltmpl
 
 let g:go_fmt_experimental = 1
@@ -202,11 +201,6 @@ autocmd FileType go nmap <leader>fs <Plug>(go-fill-struct)
 autocmd FileType go nmap <leader>ta <Plug>(go-add-tags)
 autocmd FileType go nmap <leader>rn <Plug>(go-rename)
 autocmd FileType go nmap <leader>ml <Plug>(go-metalinter)
-
-let g:go_debug_windows = {
-      \ 'vars':       'leftabove 50vnew',
-      \ 'stack':      'leftabove 50new',
-      \ }
 
 function! s:create_breakpoint() abort
   let l:line = "b" . " " . expand('%') . ":" . line(".")
