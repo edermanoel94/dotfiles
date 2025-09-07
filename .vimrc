@@ -85,17 +85,25 @@ Plug 'zhimsel/vim-stay'
 Plug 'junegunn/goyo.vim'
 Plug 'pablopunk/persistent-undo.vim'
 Plug 'luochen1990/rainbow'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+if exists("+python3")
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
+endif
+
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
 
 "---------------------------------------------------------------- Ultisnips {{{1
 
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
+
+if exists("+python3")
+  let g:UltiSnipsExpandTrigger="<tab>"
+  let g:UltiSnipsJumpForwardTrigger="<tab>"
+  let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
+endif
 
 command! GoSnippets call s:GoSnippets()
 
