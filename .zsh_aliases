@@ -1,9 +1,9 @@
-alias lg=lazygit
 alias c=clear
 alias e=exit
-alias todo='vim ~/Documents/TODO'
-alias todo-view='cat ~/Documents/TODO'
-
 alias ports='sudo lsof -i -P -n | grep LISTEN'
 
-alias artisan="go run . artisan"
+cheat() {
+  curl -s "https://cheat.sh/$1"
+}
+
+alias lg=lazygit
