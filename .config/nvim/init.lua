@@ -44,6 +44,8 @@ vim.schedule(function()
 end)
 
 vim.keymap.set('n', '<leader>a', '<cmd>cclose<CR>', { silent = true })
+vim.keymap.set('n', '<leader>o', '<cmd>copen<CR>', { silent = true })
+vim.keymap.set('n', '<C-a>', '<C-i>', { noremap = true, silent = true })
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -150,7 +152,8 @@ require("lazy").setup({
                 local builtin = require("telescope.builtin")
                 vim.keymap.set("n", "<C-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
                 vim.keymap.set("n", "<C-f>", builtin.live_grep, { desc = "[S]earch by [G]rep" })
-                vim.keymap.set("n", "<C-b>", builtin.buffers, { desc = "[ ] Find existing buffers" })
+                vim.keymap.set("n", "<C-b>", builtin.buffers, { desc = "Find existing buffers" })
+                vim.keymap.set("n", "<C-m>", builtin.oldfiles, { desc = "Old Files" })
 
                 -- It's also possible to pass additional configuration options.
                 --  See `:help telescope.builtin.live_grep()` for information about particular keys
@@ -254,9 +257,9 @@ require("lazy").setup({
                     signs = vim.g.have_nerd_font and {
                         text = {
                             [vim.diagnostic.severity.ERROR] = "󰅚 ",
-                            [vim.diagnostic.severity.WARN] = "󰀪 ",
-                            [vim.diagnostic.severity.INFO] = "󰋽 ",
-                            [vim.diagnostic.severity.HINT] = "󰌶 ",
+                            [vim.diagnostic.severity.WARN]  = "󰀪 ",
+                            [vim.diagnostic.severity.INFO]  = "󰋽 ",
+                            [vim.diagnostic.severity.HINT]  = "󰌶 ",
                         },
                     } or {},
                     virtual_text = {
@@ -345,8 +348,9 @@ require("lazy").setup({
                 "nvim-treesitter/nvim-treesitter",
             },
             opts = {
-                -- lsp_keymaps = false,
-                -- other options
+              gofmt = "gofumpt",
+              tag_transform = "snakecase",   -- exemplo
+              tag_options = "",
             },
             config = function(lp, opts)
                 require("go").setup(opts)
