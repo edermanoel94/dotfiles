@@ -43,9 +43,10 @@ vim.schedule(function()
     vim.o.clipboard = "unnamedplus"
 end)
 
+vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { silent = true })
 vim.keymap.set('n', '<leader>a', '<cmd>cclose<CR>', { silent = true })
 vim.keymap.set('n', '<leader>o', '<cmd>copen<CR>', { silent = true })
-vim.keymap.set('n', '<C-a>', '<C-i>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-a><C-a>', '<C-i>', { noremap = true, silent = true })
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -153,7 +154,6 @@ require("lazy").setup({
                 vim.keymap.set("n", "<C-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
                 vim.keymap.set("n", "<C-f>", builtin.live_grep, { desc = "[S]earch by [G]rep" })
                 vim.keymap.set("n", "<C-b>", builtin.buffers, { desc = "Find existing buffers" })
-                vim.keymap.set("n", "<C-m>", builtin.oldfiles, { desc = "Old Files" })
 
                 -- It's also possible to pass additional configuration options.
                 --  See `:help telescope.builtin.live_grep()` for information about particular keys
@@ -189,14 +189,14 @@ require("lazy").setup({
                         end
 
                         map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
-                        map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
+                        map("g.", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
                         map("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
                         map("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
                         map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-                        map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+                        map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
                         map("gs", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
                         map("gS", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
-                        map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+                        map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
                         vim.api.nvim_set_keymap("n", "<C-w>gd", ":vsplit<CR>lua vim.lsp.buf.definition()<CR>",
                             { noremap = true, silent = true })
 
@@ -296,6 +296,7 @@ require("lazy").setup({
                 local ensure_installed = vim.tbl_keys(servers or {})
                 vim.list_extend(ensure_installed, {
                     "stylua", -- Used to format Lua code
+                    "gopls",
                 })
                 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
                 require("mason-lspconfig").setup({
