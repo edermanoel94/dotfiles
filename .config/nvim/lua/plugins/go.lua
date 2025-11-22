@@ -7,7 +7,7 @@ return {
   },
   opts = {
     gofmt = "gofumpt",
-    tag_transform = "snakecase",   -- exemplo
+    tag_transform = "snakecase",
     tag_options = "",
   },
   config = function(lp, opts)

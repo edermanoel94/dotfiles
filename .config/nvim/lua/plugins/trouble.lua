@@ -4,14 +4,19 @@ return {
   cmd = "Trouble",
   keys = {
     {
-      "<leader>T",
-      "<cmd>Trouble diagnostics toggle<CR>",
+      "<leader>fd",
+      "<cmd>Trouble diagnostics toggle focus=false<CR>",
       desc = "Diagnostics",
     },
     {
       "<leader>bd",
-      "<cmd>Trouble diagnostics toggle filter.buf=0<CR>",
+      "<cmd>Trouble diagnostics toggle focus=false filter.buf=0<CR>",
       desc = "Buffer Diagnostics",
+    },
+    {
+      "<leader>br",
+      "<cmd>Trouble lsp toggle focus=false filter.buf=0<CR>",
+      desc = "Buffer References",
     },
     {
       "<leader>gr",
