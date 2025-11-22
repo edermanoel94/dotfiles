@@ -27,17 +27,9 @@ return {
 
     -- See `:help telescope.builtin`
     local builtin = require("telescope.builtin")
-    vim.keymap.set("n", "<C-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
-    vim.keymap.set("n", "<C-f>", builtin.live_grep, { desc = "[S]earch by [G]rep" })
+    vim.keymap.set("n", "<C-p>", builtin.find_files, { desc = "Search Files" })
+    vim.keymap.set("n", "<C-f>", builtin.live_grep, { desc = "Search by Grep" })
     vim.keymap.set("n", "<C-b>", builtin.buffers, { desc = "Find existing buffers" })
-
-    -- It's also possible to pass additional configuration options.
-    --  See `:help telescope.builtin.live_grep()` for information about particular keys
-    vim.keymap.set("n", "<leader>s/", function()
-      builtin.live_grep({
-        grep_open_files = true,
-        prompt_title = "Live Grep in Open Files",
-      })
-    end, { desc = "[S]earch [/] in Open Files" })
+    vim.keymap.set("n", "<space><space>", builtin.oldfiles, { desc = "Find Recent Files" })
   end,
 }

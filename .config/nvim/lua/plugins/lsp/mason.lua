@@ -2,7 +2,7 @@ return {
   "williamboman/mason.nvim",
   dependencies = {
     "williamboman/mason-lspconfig.nvim",
-    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    -- "WhoIsSethDaniel/mason-tool-installer.nvim",
   },
   config = function()
     -- import mason
@@ -10,8 +10,6 @@ return {
 
     -- import mason-lspconfig
     local mason_lspconfig = require("mason-lspconfig")
-
-    local mason_tool_installer = require("mason-tool-installer")
 
     local capabilities = require("blink.cmp").get_lsp_capabilities()
 
@@ -59,13 +57,27 @@ return {
           vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
           require("lspconfig")[server_name].setup(server)
         end,
-      }
-    })
 
-    mason_tool_installer.setup({
-      ensure_installed = {
-        "stylua", -- lua formatter
-      },
+        ["lua_ls"] = function()
+          local lspconfig = require("lspconfig")
+          lspconfig.lua_ls.setup {
+            capabilities = capabilities,
+            settings = {
+              Lua = {
+                format = {
+                  enable = true,
+                  -- Put format options here
+                  -- NOTE: the value should be STRING!!
+                  defaultConfig = {
+                    indent_style = "space",
+                    indent_size = "2",
+                  }
+                },
+              }
+            }
+          }
+        end
+      }
     })
   end,
 }
