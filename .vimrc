@@ -100,13 +100,8 @@ highlight ColorColumn ctermbg=0 guibg=lightgrey
 set termguicolors
 set bg=dark
 
-" let ayucolor="light"  " for light version of theme
-" let ayucolor="mirage" " for mirage version of theme
-" let ayucolor="dark"   " for dark version of theme
-
 " colorscheme gruvbox
 colorscheme darcula
-" colorscheme ayu
 
 "---------------------------------------------------------------- Plantuml Previewer {{{1
 
