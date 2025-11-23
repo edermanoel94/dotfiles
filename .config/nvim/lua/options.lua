@@ -25,7 +25,7 @@ vim.opt.wildmenu = true
 vim.opt.showcmd = true -- "show incomplete cmds down the bottom
 vim.opt.showmode = true -- "show current mode down the bottom
 vim.opt.incsearch = true -- "find the next match as we type the search
-vim.opt.wrap = false   -- "dont wrap lines
+vim.opt.wrap = false -- "dont wrap lines
 vim.opt.backup = false
 vim.opt.undofile = true
 vim.opt.ignorecase = true
@@ -41,10 +41,9 @@ vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 
 vim.schedule(function()
-    vim.o.clipboard = "unnamedplus"
+	vim.o.clipboard = "unnamedplus"
 end)
 
-vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { silent = true })
-vim.keymap.set('n', '<leader>a', '<cmd>cclose<CR>', { silent = true })
-vim.keymap.set('n', '<leader>o', '<cmd>copen<CR>', { silent = true })
-
+vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { silent = true })
+vim.keymap.set("n", "<leader>a", "<cmd>cclose<CR>", { silent = true })
+vim.keymap.set("n", "<leader>o", "<cmd>copen<CR>", { silent = true })
