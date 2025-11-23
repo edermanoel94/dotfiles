@@ -19,8 +19,9 @@ require("options")
 
 require("lazy").setup({
 	{ import = "plugins" },
-	change_detection = { notify = false },
 })
+
+vim.cmd.colorscheme("gruvbox")
 
 local function create_breakpoint()
 	local file = vim.fn.expand("%")

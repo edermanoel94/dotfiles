@@ -47,3 +47,5 @@ end)
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { silent = true })
 vim.keymap.set("n", "<leader>a", "<cmd>cclose<CR>", { silent = true })
 vim.keymap.set("n", "<leader>o", "<cmd>copen<CR>", { silent = true })
+
+vim.keymap.set("n", "Q", "<nop>")
