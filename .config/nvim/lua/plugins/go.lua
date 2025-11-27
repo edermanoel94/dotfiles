@@ -6,6 +6,8 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 	},
 	opts = {
+		diagnostic = false,
+		lsp_cfg = false,
 		gofmt = "gofumpt",
 		tag_transform = "snakecase",
 		tag_options = "",
