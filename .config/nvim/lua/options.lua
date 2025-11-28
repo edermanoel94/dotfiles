@@ -44,8 +44,9 @@ vim.schedule(function()
 	vim.o.clipboard = "unnamedplus"
 end)
 
+vim.keymap.set("n", "Q", "<nop>")
+
+vim.keymap.set("n", "<leader>Q", "<cmd>q<CR>", { silent = true })
 vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { silent = true })
 vim.keymap.set("n", "<leader>a", "<cmd>cclose<CR>", { silent = true })
 vim.keymap.set("n", "<leader>o", "<cmd>copen<CR>", { silent = true })
-
-vim.keymap.set("n", "Q", "<nop>")

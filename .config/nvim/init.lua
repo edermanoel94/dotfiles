@@ -52,6 +52,7 @@ vim.api.nvim_create_autocmd("FileType", {
 			vim.cmd("GoAlt")
 		end, {})
 
+		vim.keymap.set("n", "<leader>fp", "<cmd>GoFixPlurals<CR>", { silent = true })
 		vim.keymap.set("n", "<leader>fs", "<cmd>GoFillStruct<CR>", { silent = true })
 		vim.keymap.set("n", "<leader>ta", "<cmd>GoAddTag<CR>", { silent = true })
 		vim.keymap.set("n", "<Leader>c", "<cmd>GoCoverage -t<CR>", { silent = true, desc = "Toggle Go coverage" })
