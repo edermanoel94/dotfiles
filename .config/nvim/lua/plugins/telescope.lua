@@ -15,6 +15,13 @@ return {
 	},
 	config = function()
 		require("telescope").setup({
+			defaults = {
+				{
+					layout_config = {
+						prompt_position = "top",
+					},
+				},
+			},
 			extensions = {
 				["ui-select"] = {
 					require("telescope.themes").get_dropdown(),

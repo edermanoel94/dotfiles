@@ -4,16 +4,27 @@ return {
 		"ray-x/guihua.lua",
 		"neovim/nvim-lspconfig",
 		"nvim-treesitter/nvim-treesitter",
+		"hrsh7th/cmp-nvim-lsp",
 	},
-	opts = {
-		diagnostic = false,
-		lsp_cfg = false,
-		gofmt = "gofumpt",
-		tag_transform = "snakecase",
-		tag_options = "",
-	},
-	config = function(lp, opts)
-		require("go").setup(opts)
+	config = function()
+		local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+		require("go").setup({
+			gofmt = "gofumpt",
+			tag_transform = "snakecase",
+			tag_options = "",
+
+			lsp_cfg = {
+				capabilities = capabilities,
+			},
+
+			lsp_inlay_hints = {
+				enable = false, -- this is the only field apply to neovim > 0.10
+			},
+
+      trouble = true,
+		})
+
 		local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			pattern = "*.go",
