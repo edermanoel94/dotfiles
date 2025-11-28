@@ -36,5 +36,6 @@ return {
 		vim.keymap.set("n", "<C-f>", builtin.live_grep, { desc = "Search by Grep" })
 		vim.keymap.set("n", "<C-b>", builtin.buffers, { desc = "Find existing buffers" })
 		vim.keymap.set("n", "<space><space>", builtin.oldfiles, { desc = "Find Recent Files" })
+		vim.keymap.set("n", "<space>di", builtin.diagnostics, { desc = "View All Diagnostics" })
 	end,
 }
