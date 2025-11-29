@@ -23,6 +23,8 @@ return {
 			"vim",
 			"vimdoc",
 			"json",
+      "rust",
+      "zig",
 		},
 		auto_install = true,
 		sync_install = false,
