@@ -40,6 +40,7 @@ vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 vim.opt.path:append("**")
+vim.opt.isfname:append("@-@")
 
 vim.schedule(function()
 	vim.o.clipboard = "unnamedplus"
