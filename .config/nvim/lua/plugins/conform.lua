@@ -13,6 +13,9 @@ return {
 				lua = { "stylua" },
 				javascript = { "prettier" },
 				typescript = { "prettier" },
+				zig = { "zigfmt" },
+				go = { "gofumpt" },
+				rust = { "rustfmt" },
 			},
 			formatters = {
 				["clang-format"] = {
