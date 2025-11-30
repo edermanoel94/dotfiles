@@ -37,7 +37,10 @@ return {
 		vim.keymap.set("n", "<C-b>", builtin.buffers, { desc = "Find existing buffers" })
 		vim.keymap.set("n", "<space><space>", builtin.oldfiles, { desc = "Find Recent Files" })
 		vim.keymap.set("n", "<space>di", function ()
-		  builtin.diagnostics({bufnr = 0})
+		  builtin.diagnostics({
+        bufnr = 0,
+        severity = "ERROR",
+      })
 		end, { desc = "View Buffer Diagnostics" })
 		vim.keymap.set("n", "<space>dI", builtin.diagnostics, { desc = "View All Diagnostics" })
 	end,
