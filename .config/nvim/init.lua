@@ -52,6 +52,10 @@ vim.api.nvim_create_autocmd("FileType", {
 			vim.cmd("GoAlt")
 		end, {})
 
+		vim.api.nvim_create_user_command("AV", function(opts)
+			vim.cmd("GoAltV")
+		end, {})
+
 		vim.keymap.set("n", "<leader>fp", "<cmd>GoFixPlurals<CR>", { silent = true })
 		vim.keymap.set("n", "<leader>fs", "<cmd>GoFillStruct<CR>", { silent = true })
 		vim.keymap.set("n", "<leader>ta", "<cmd>GoAddTag<CR>", { silent = true })
