@@ -22,7 +22,7 @@ require("lazy").setup({
 })
 
 vim.cmd.colorscheme("gruvbox")
-vim.cmd("let g:plantuml_executable_script='java -XX:MaxPermSize=512m -jar /Users/ecosta/jars/plantuml.jar'")
+vim.cmd("let g:plantuml_executable_script='java -XX:MaxPermSize=512m -jar /Users/ecosta/jars/plantuml.jar -tpng $@'")
 
 local function create_breakpoint()
 	local file = vim.fn.expand("%")
