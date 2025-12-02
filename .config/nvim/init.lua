@@ -22,6 +22,7 @@ require("lazy").setup({
 })
 
 vim.cmd.colorscheme("gruvbox")
+vim.cmd("let g:plantuml_executable_script='java -XX:MaxPermSize=512m -jar /Users/ecosta/jars/plantuml.jar'")
 
 local function create_breakpoint()
 	local file = vim.fn.expand("%")
@@ -85,5 +86,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("gs", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
 		map("gS", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
 		map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+
+		vim.keymap.set("i", "<C-k>", function()
+			vim.lsp.buf.hover()
+		end, { noremap = true, silent = true, desc = "LSP Hover Documentation" })
 	end,
 })

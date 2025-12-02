@@ -15,7 +15,7 @@ return {
 				typescript = { "prettier" },
 				zig = { "zigfmt" },
 				go = { "gofumpt" },
-				rust = { "rustfmt" },
+				rust = { "rustfmt", lsp_format = "fallback" },
 			},
 			formatters = {
 				["clang-format"] = {
