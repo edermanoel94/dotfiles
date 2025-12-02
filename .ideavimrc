@@ -19,7 +19,7 @@ set incsearch
 set ignorecase
 set smartcase
 
-set history=1000
+" set timeoutlen=5000
 
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
 
@@ -28,6 +28,9 @@ Plug 'machakann/vim-highlightedyank'
 " Commentary plugin
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
+
+set NERDTree
+set which-key
 
 nnoremap <c-\> :action SplitVertically<CR>
 nnoremap <c--> :action SplitHorizontally<CR>
@@ -43,15 +46,31 @@ set idearefactormode=keep
 nnoremap [[ :action MethodUp<CR>
 nnoremap ]] :action MethodDown<CR>
 
-set incsearch
+" easy removal of search highlighting "
+nnoremap <silent><C-l> :nohlsearch<CR>
 
-nnoremap <c-f> :action GotoFile<CR>
+nnoremap <c-f> :action FindInPath<CR>
+nnoremap <c-p> :action GotoFile<CR>
+nnoremap <c-s> :action GotoSymbol<CR>
+" nnoremap <c-b> :action RecentFiles<CR>
+nnoremap <c-b> :action RecentLocations<CR>
 
 nnoremap <c-o> :action Back<CR>
 nnoremap <c-i> :action Forward<CR>
 
 nmap <leader>rn :action RenameElement<CR>
-nmap <silent><leader>Q :action CloseEditor<CR>
+nmap <leader>c  :action GoCoverage<CR>
 
-"" Map \b to toggle the breakpoint on the current line
-map <leader>b <Action>(ToggleLineBreakpoint)
+nmap <leader>Q <action>(CloseEditor)
+nmap <leader>b <action>(ToggleLineBreakpoint)
+nmap <leader>. <action>(ShowIntentionActions)
+nmap <leader>a <action>(HideActiveWindow)
+
+nmap <leader>mt <action>(ToggleBookmark)
+nmap <leader>mm <action>(ToggleBookmarkWithMnemonic)
+nmap <leader>ml <action>(ShowBookmarks)
+
+nmap <leader>gr <action>(FindUsages)
+
+nnoremap <leader>e :NERDTreeToggle<CR>
+nnoremap <leader>E :NERDTreeFind<CR>
