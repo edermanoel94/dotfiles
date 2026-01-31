@@ -22,7 +22,7 @@ return {
 				enable = false, -- this is the only field apply to neovim > 0.10
 			},
 
-      trouble = true,
+			trouble = true,
 		})
 
 		local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})

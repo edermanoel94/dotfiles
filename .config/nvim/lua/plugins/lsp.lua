@@ -11,7 +11,7 @@ return {
 		"hrsh7th/nvim-cmp",
 		"saadparwaiz1/cmp_luasnip",
 		"L3MON4D3/LuaSnip",
-    "onsails/lspkind.nvim",
+		"onsails/lspkind.nvim",
 	},
 
 	config = function()
@@ -94,7 +94,7 @@ return {
 			},
 			window = {
 				completion = cmp.config.window.bordered(),
-				 documentation = cmp.config.window.bordered(),
+				documentation = cmp.config.window.bordered(),
 			},
 			mapping = cmp.mapping.preset.insert({
 				["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
@@ -122,7 +122,6 @@ return {
 				end, { "i", "s" }),
 			}),
 			sources = cmp.config.sources({
-				-- { name = "copilot", group_index = 2 },
 				{ name = "nvim_lsp" },
 				{ name = "luasnip" }, -- For luasnip users.
 			}, {
