@@ -84,6 +84,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'pablopunk/persistent-undo.vim'
 Plug 'luochen1990/rainbow'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --go-completer' }
 
 call plug#end()
 
@@ -159,7 +160,13 @@ let g:go_decls_mode = 'fzf'
 let g:go_test_timeout = "30s"
 let g:go_test_show_name = 1
 let g:go_list_type = "quickfix"
-let g:go_fmt_command = "gopls"
+let g:go_fmt_command = "gofmt"
+
+" Disable vim-go LSP features — YCM handles them
+let g:go_gopls_enabled = 0
+let g:go_def_mapping_enabled = 0
+let g:go_doc_keywordprg_enabled = 0
+let g:go_code_completion_enabled = 0
 
 let g:go_textobj_include_function_doc = 0
 
@@ -189,8 +196,7 @@ autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit'
 autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
 autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
 
-autocmd FileType go nmap gr <Plug>(go-referrers)
-autocmd FileType go nmap gi <Plug>(go-implements)
+" vim-go utilities (non-LSP)
 autocmd FileType go nmap gI <Plug>(go-if-err)
 autocmd FileType go nmap gs <Plug>(go-decls)
 autocmd FileType go nmap gS <Plug>(go-decls-dir)
@@ -198,7 +204,6 @@ autocmd FileType go nmap gS <Plug>(go-decls-dir)
 autocmd FileType go nmap <leader>ct <Plug>(go-coverage-toggle)
 autocmd FileType go nmap <leader>fs <Plug>(go-fill-struct)
 autocmd FileType go nmap <leader>ta <Plug>(go-add-tags)
-autocmd FileType go nmap <leader>rn <Plug>(go-rename)
 autocmd FileType go nmap <leader>ml <Plug>(go-metalinter)
 
 function! s:create_breakpoint() abort
@@ -227,6 +232,22 @@ function! s:open_github_repo_code() abort
 endfunction
 
 autocmd FileType go nmap <leader>b :<C-u>call <SID>create_breakpoint()<CR>
+
+"---------------------------------------------------------------- YCM {{{1
+
+let g:ycm_auto_hover = 0
+let g:ycm_key_list_select_completion = ['<Tab>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<S-Tab>', '<Up>']
+let g:ycm_min_num_of_chars_for_completion = 1
+
+" LSP navigation (replaces vim-go LSP keymaps)
+autocmd FileType go nmap <silent> gd :YcmCompleter GoTo<CR>
+autocmd FileType go nmap <silent> gr :YcmCompleter GoToReferences<CR>
+autocmd FileType go nmap <silent> gi :YcmCompleter GoToImplementation<CR>
+autocmd FileType go nmap <silent> gt :YcmCompleter GetType<CR>
+autocmd FileType go nmap <silent> <leader>rn :YcmCompleter RefactorRename<CR>
+autocmd FileType go nmap <silent> g. :YcmCompleter FixIt<CR>
+autocmd FileType go nmap <silent> K :YcmCompleter GetDoc<CR>
 
 nmap <leader>f :<C-u>call <SID>open_github_repo_code()<CR>
 
