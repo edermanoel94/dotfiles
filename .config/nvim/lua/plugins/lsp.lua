@@ -30,7 +30,6 @@ return {
 			ensure_installed = {
 				"lua_ls",
 				"gopls",
-				"rust_analyzer",
 				"zls",
 			},
 			handlers = {

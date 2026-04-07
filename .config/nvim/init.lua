@@ -21,6 +21,12 @@ require("lazy").setup({
 	{ import = "plugins" },
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+	callback = function()
+		pcall(vim.treesitter.start)
+	end,
+})
+
 vim.cmd.colorscheme("gruvbox")
 vim.cmd("let g:plantuml_executable_script='java -jar /Users/ecosta/jars/plantuml.jar -tpng $@'")
 
@@ -88,7 +94,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
 
 		vim.keymap.set("i", "<C-k>", function()
-			vim.lsp.buf.hover()
+			vim.lsp.buf.signature_hover()
 		end, { noremap = true, silent = true, desc = "LSP Hover Documentation" })
 	end,
 })
