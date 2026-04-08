@@ -4,22 +4,18 @@ return {
 		"ray-x/guihua.lua",
 		"neovim/nvim-lspconfig",
 		"nvim-treesitter/nvim-treesitter",
-		"hrsh7th/cmp-nvim-lsp",
 	},
 	config = function()
-		local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-
 		require("go").setup({
 			gofmt = "gofumpt",
 			tag_transform = "snakecase",
 			tag_options = "",
 
-			lsp_cfg = {
-				capabilities = capabilities,
-			},
+			lsp_cfg = false,       -- gopls is managed by mason-lspconfig in lsp.lua
+			lsp_gofumpt = false,   -- formatting handled by conform.nvim
 
 			lsp_inlay_hints = {
-				enable = false, -- this is the only field apply to neovim > 0.10
+				enable = false,
 			},
 
 			trouble = true,

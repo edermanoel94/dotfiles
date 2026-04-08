@@ -14,7 +14,7 @@ return {
 				javascript = { "prettier" },
 				typescript = { "prettier" },
 				zig = { "zigfmt" },
-				go = { "gofumpt" },
+				-- go: formatting handled by go.nvim goimports autocmd (BufWritePre)
 				rust = { "rustfmt", lsp_format = "fallback" },
 			},
 			formatters = {
