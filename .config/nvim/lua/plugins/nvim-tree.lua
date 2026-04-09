@@ -1,21 +1,20 @@
 return {
 	"nvim-tree/nvim-tree.lua",
+	keys = {
+		{ "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "Toggle NvimTree" },
+		{ "<leader>E", "<cmd>NvimTreeFindFileToggle<CR>", desc = "Find file in NvimTree" },
+	},
 	config = function()
 		vim.g.loaded_netrw = 1
 		vim.g.loaded_netrwPlugin = 1
 
-    require("nvim-tree").setup({
-      filters = {
-        dotfiles = false,
-      },
-      view = {
-        adaptive_size = true,
-      },
-    })
-
-		vim.keymap.set("n", "<leader>E", ":NvimTreeFindFileToggle<CR>")
-		vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", {
-			noremap = true,
+		require("nvim-tree").setup({
+			filters = {
+				dotfiles = false,
+			},
+			view = {
+				adaptive_size = true,
+			},
 		})
 	end,
 }
