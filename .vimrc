@@ -105,8 +105,8 @@ highlight ColorColumn ctermbg=0 guibg=lightgrey
 set termguicolors
 set bg=dark
 
-" colorscheme gruvbox
-colorscheme darcula
+colorscheme gruvbox
+" colorscheme darcula
 
 "---------------------------------------------------------------- Plantuml Previewer {{{1
 
