@@ -23,7 +23,7 @@ set viewoptions-=options
 
 set clipboard=unnamed
 set completeopt-=preview
-set updatetime=100
+set updatetime=300
 
 set wildignore+=__debug_bin
 set wildignore+=*.o,*.a,*.so,*.pyc,*.swp,.git/,*.class,*/target/*,*.idea/*,venv/,node_modules/
@@ -84,6 +84,11 @@ Plug 'junegunn/goyo.vim'
 Plug 'pablopunk/persistent-undo.vim'
 Plug 'luochen1990/rainbow'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 call plug#end()
 
@@ -159,7 +164,13 @@ let g:go_decls_mode = 'fzf'
 let g:go_test_timeout = "30s"
 let g:go_test_show_name = 1
 let g:go_list_type = "quickfix"
-let g:go_fmt_command = "gopls"
+
+" Navigation / rename / diagnostics come from vim-lsp (gopls).
+" vim-go keeps :GoTest, :GoCoverage, :GoFillStruct, :GoAddTags, alternate files.
+let g:go_fmt_autosave = 0
+let g:go_imports_autosave = 0
+let g:go_def_mapping_enabled = 0
+let g:go_doc_keywordprg_enabled = 0
 
 let g:go_textobj_include_function_doc = 0
 
@@ -172,14 +183,7 @@ let g:go_highlight_operators = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_build_constraints = 1
 
-let g:go_metalinter_enabled = ['govet', 'revive', 'golint', 'errcheck']
-let g:go_metalinter_autosave = 1
-let g:go_metalinter_autosave_enabled = ['golint']
-
 let g:go_addtags_transform = "camelcase"
-
-let g:go_doc_popup_window = 1
-let g:go_auto_type_info = 1
 
 let g:go_fold_enable = [ 'block',  'import',  'package_comment',  'comment' ]
 
@@ -188,18 +192,6 @@ autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
 autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')
 autocmd Filetype go command! -bang AS call go#alternate#Switch(<bang>0, 'split')
 autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
-
-autocmd FileType go nmap gr <Plug>(go-referrers)
-autocmd FileType go nmap gi <Plug>(go-implements)
-autocmd FileType go nmap gI <Plug>(go-if-err)
-autocmd FileType go nmap gs <Plug>(go-decls)
-autocmd FileType go nmap gS <Plug>(go-decls-dir)
-
-autocmd FileType go nmap <leader>ct <Plug>(go-coverage-toggle)
-autocmd FileType go nmap <leader>fs <Plug>(go-fill-struct)
-autocmd FileType go nmap <leader>ta <Plug>(go-add-tags)
-autocmd FileType go nmap <leader>rn <Plug>(go-rename)
-autocmd FileType go nmap <leader>ml <Plug>(go-metalinter)
 
 function! s:create_breakpoint() abort
   let l:line = "b" . " " . expand('%') . ":" . line(".")
@@ -255,6 +247,143 @@ if executable('jq')
   nnoremap <leader>jq :%!jq .<CR>
   nnoremap <leader>ji :%!jq -rc .<CR>
 endif
+
+"---------------------------------------------------------------- LSP {{{1
+
+let g:lsp_settings = {
+\   'gopls': {
+\     'workspace_config': {
+\       'gopls': {
+\         'gofumpt': v:true,
+\         'staticcheck': v:true,
+\         'usePlaceholders': v:true,
+\       },
+\     },
+\   },
+\ }
+
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_document_highlight_enabled = 1
+let g:lsp_signs_enabled = 1
+
+let g:asyncomplete_auto_popup = 1
+let g:asyncomplete_auto_completeopt = 1
+
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <CR>    pumvisible() ? "\<C-y>" : "\<CR>"
+
+function! s:on_lsp_buffer_enabled() abort
+  setlocal omnifunc=lsp#complete
+  setlocal signcolumn=yes
+
+  nmap <buffer> gd         <plug>(lsp-definition)
+  nmap <buffer> gD         <plug>(lsp-declaration)
+  nmap <buffer> gr         <plug>(lsp-references)
+  nmap <buffer> gi         <plug>(lsp-implementation)
+  nmap <buffer> gt         <plug>(lsp-type-definition)
+  nmap <buffer> K          <plug>(lsp-hover)
+  nmap <buffer> <leader>rn <plug>(lsp-rename)
+  nmap <buffer> g.         <plug>(lsp-code-action)
+  nmap <buffer> [g         <plug>(lsp-previous-diagnostic)
+  nmap <buffer> ]g         <plug>(lsp-next-diagnostic)
+endfunction
+
+augroup lsp_install
+  au!
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+augroup lsp_format_go
+  au!
+  autocmd BufWritePre *.go call execute('LspDocumentFormatSync')
+augroup END
+
+"---------------------------------------------------------------- GO DIAGNOSTICS (LSP + golangci-lint) {{{1
+
+" Combined quickfix: gopls diagnostics + golangci-lint output.
+" - BufWritePost: re-runs golangci-lint (sync) and rebuilds the qf list.
+" - User lsp_diagnostics_updated: rebuilds qf with latest gopls diagnostics
+"   plus the last stored golangci-lint items.
+
+let s:go_lint_items = []
+
+function! s:lsp_diagnostics_to_items(bufnr) abort
+  let l:items = []
+  if !exists('*lsp#internal#diagnostics#state#_get_all_diagnostics_grouped_by_server_for_buffer')
+    return l:items
+  endif
+  let l:grouped = lsp#internal#diagnostics#state#_get_all_diagnostics_grouped_by_server_for_buffer(a:bufnr)
+  for l:server in keys(l:grouped)
+    for l:d in l:grouped[l:server]
+      let l:severity = get(l:d, 'severity', 1)
+      let l:type = l:severity ==# 1 ? 'E' : (l:severity ==# 2 ? 'W' : 'I')
+      call add(l:items, {
+      \   'bufnr': a:bufnr,
+      \   'lnum':  l:d.range.start.line + 1,
+      \   'col':   l:d.range.start.character + 1,
+      \   'text':  '[' . l:server . '] ' . substitute(l:d.message, '\n', ' ', 'g'),
+      \   'type':  l:type,
+      \ })
+    endfor
+  endfor
+  return l:items
+endfunction
+
+function! s:refresh_go_qf() abort
+  if &filetype !=# 'go' | return | endif
+  let l:items = s:lsp_diagnostics_to_items(bufnr('%')) + s:go_lint_items
+  call setqflist([], ' ', {
+  \   'title': 'GO DIAGNOSTIC:',
+  \   'items': l:items,
+  \ })
+  if empty(s:go_lint_items)
+    cclose
+  else
+    botright copen
+    wincmd p
+  endif
+endfunction
+
+let s:go_lint_job = v:null
+let s:go_lint_output = []
+
+function! s:golangci_lint_on_out(ch, msg) abort
+  call add(s:go_lint_output, a:msg)
+endfunction
+
+function! s:golangci_lint_on_exit(job, status) abort
+  let l:parsed = getqflist({'lines': s:go_lint_output, 'efm': '%f:%l:%c: %m,%f:%l: %m'})
+  let s:go_lint_items = map(filter(get(l:parsed, 'items', []), 'v:val.valid'),
+  \   {_, i -> extend(i, {'text': '[golangci-lint] ' . i.text})})
+  let s:go_lint_output = []
+  let s:go_lint_job = v:null
+  call s:refresh_go_qf()
+endfunction
+
+function! s:golangci_lint() abort
+  if !executable('golangci-lint')
+    let s:go_lint_items = []
+    call s:refresh_go_qf()
+    return
+  endif
+  if s:go_lint_job isnot v:null && job_status(s:go_lint_job) ==# 'run'
+    call job_stop(s:go_lint_job)
+  endif
+  let s:go_lint_output = []
+  let s:go_lint_job = job_start(['golangci-lint', 'run'], {
+  \   'cwd':     expand('%:p:h'),
+  \   'out_cb':  function('s:golangci_lint_on_out'),
+  \   'err_cb':  function('s:golangci_lint_on_out'),
+  \   'exit_cb': function('s:golangci_lint_on_exit'),
+  \ })
+endfunction
+
+augroup go_diagnostics_qf
+  au!
+  autocmd BufWritePost *.go call s:golangci_lint()
+augroup END
 
 "---------------------------------------------------------------- WHITESPACE {{{1
 if exists('loaded_trailing_whitespace_plugin') | finish | endif
