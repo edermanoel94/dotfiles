@@ -94,7 +94,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
 
 		vim.keymap.set("i", "<C-k>", function()
-			vim.lsp.buf.signature_hover()
-		end, { noremap = true, silent = true, desc = "LSP Hover Documentation" })
+			vim.lsp.buf.signature_help()
+		end, { noremap = true, silent = true, desc = "LSP Signature Help" })
 	end,
 })

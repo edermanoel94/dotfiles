@@ -39,6 +39,7 @@ vim.opt.splitbelow = true
 vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
+vim.o.winborder = "rounded"
 vim.opt.path:append("**")
 vim.opt.isfname:append("@-@")
 
