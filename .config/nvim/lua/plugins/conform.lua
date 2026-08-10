@@ -1,31 +1,25 @@
-return {
-	"stevearc/conform.nvim",
-	opts = {},
-	config = function()
-		require("conform").setup({
-			format_on_save = {
-				timeout_ms = 5000,
-				lsp_format = "fallback",
-			},
-			formatters_by_ft = {
-				c = { "clang-format" },
-				cpp = { "clang-format" },
-				lua = { "stylua" },
-				javascript = { "prettier" },
-				typescript = { "prettier" },
-				zig = { "zigfmt" },
-				-- go: formatting handled by go.nvim goimports autocmd (BufWritePre)
-				rust = { "rustfmt", lsp_format = "fallback" },
-			},
-			formatters = {
-				["clang-format"] = {
-					prepend_args = { "-style=file", "-fallback-style=LLVM" },
-				},
-			},
-		})
+vim.pack.add({
+	"https://github.com/stevearc/conform.nvim",
+})
 
-		vim.keymap.set("n", "<leader>f", function()
-			require("conform").format({ bufnr = 0 })
-		end)
-	end,
-}
+require("conform").setup({
+	format_on_save = {
+		timeout_ms = 5000,
+		lsp_format = "fallback",
+	},
+	formatters_by_ft = {
+		c = { "clang-format" },
+		cpp = { "clang-format" },
+		lua = { "stylua" },
+		javascript = { "prettier" },
+		typescript = { "prettier" },
+		zig = { "zigfmt" },
+		-- go: formatting handled by go.nvim goimports autocmd (BufWritePre)
+		rust = { "rustfmt", lsp_format = "fallback" },
+	},
+	formatters = {
+		["clang-format"] = {
+			prepend_args = { "-style=file", "-fallback-style=LLVM" },
+		},
+	},
+})
