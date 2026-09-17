@@ -8,7 +8,7 @@ local function list_buffers()
 			local lnum = vim.api.nvim_buf_get_mark(bufnr, '"')[1]
 
 			local text = name ~= "" and vim.fn.fnamemodify(name, ":~:.") or "[No Name]"
-
+			-- Unsaved changes marker, same convention as the '+' flag in :ls
 			if vim.bo[bufnr].modified then
 				text = text .. " [+]"
 			end

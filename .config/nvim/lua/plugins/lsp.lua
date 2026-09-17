@@ -5,7 +5,10 @@ vim.pack.add({
 	"https://github.com/neovim/nvim-lspconfig",
 	"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
 	"https://github.com/b0o/SchemaStore.nvim",
+	"https://github.com/artemave/workspace-diagnostics.nvim",
 })
+
+require("workspace-diagnostics").setup()
 
 -- options
 require("mason").setup()
@@ -33,7 +36,17 @@ vim.api.nvim_create_autocmd(
 	"LspAttach",
 	{ --  Use LspAttach autocommand to only map the following keys after the language server attaches to the current buffer
 		group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+
 		callback = function(ev)
+			local client = vim.lsp.get_client_by_id(ev.data.client_id)
+			if client then
+				if client:supports_method("workspace/diagnostic", ev.buf) then
+					vim.lsp.buf.workspace_diagnostics({ client_id = client.id })
+				else
+					require("workspace-diagnostics").populate_workspace_diagnostics(client, ev.buf)
+				end
+			end
+
 			vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc" -- Enable completion triggered by <c-x><c-o>
 
 			local opts = function(desc)
@@ -57,6 +70,7 @@ vim.api.nvim_create_autocmd(
 					border = "rounded",
 				})
 			end, opts("Show diagnostics float"))
+			vim.keymap.set("n", "<leader>da", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 		end,
 	}
 )

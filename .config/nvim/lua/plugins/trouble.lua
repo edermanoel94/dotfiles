@@ -7,4 +7,4 @@ vim.pack.add({
 require("trouble").setup()
 
 -- keymaps
-vim.keymap.set("n", "<leader>fd", "<cmd>Trouble diagnostics toggle<cr>", { silent = true })
+vim.keymap.set("n", "<leader>fd", "<cmd>Trouble diagnostics toggle focus=false<cr>", { silent = true })

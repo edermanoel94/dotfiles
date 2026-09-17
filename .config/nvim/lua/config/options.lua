@@ -1,4 +1,3 @@
-require("vim._core.ui2").enable({})
 vim.g.mapleader = " "
 
 vim.opt.encoding = "utf-8"
